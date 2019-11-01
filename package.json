@@ -1,0 +1,15 @@
+{
+  "name": "dom-depth-analyser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "js/main.js",
+  "scripts": {
+    "start": "http-server -c-1",
+    "test": "test"
+  },
+  "author": "richard bultitude",
+  "license": "ISC",
+  "devDependencies": {
+    "http-server": "^0.11.1"
+  }
+}
