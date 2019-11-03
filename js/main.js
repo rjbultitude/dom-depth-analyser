@@ -4,34 +4,44 @@ import htmlCollection from './html-collection-utils.js';
 htmlCollection();
 
 const startNodeClassName = 'main-container';
+let count = 0;
+let maxCount = 0;
+let deepestNode;
 
-function countDOMDepth(htmlCollection) {
-    let nList;
-    if (HTMLCollection.prototype.isPrototypeOf(htmlCollection)) {
-        nList = htmlCollection.toArray();
-    } else {
-        nList = htmlCollection;
+function convertHTMLCollection(htmlGroup) {
+    if (HTMLCollection.prototype.isPrototypeOf(htmlGroup)) {
+        console.log('Is HTMLCollection', htmlGroup);
+        return htmlGroup.toArray();
     }
-    let count = 0;
-    for (let index = 0; index < nList.length; index++) {
-        count = index;
-    }
-    return count;
+    return htmlGroup;
 }
 
-function getDOMDepth(startingNode, className) {
-    let count = 0;
-    startingNode.children.each((node) => {
-        if (node.classList.contains(className)) {
-            const children = node.childNodes;
-            console.log('children', children);
-            count = countDOMDepth(children);
+function countDOMDepth(startCollection) {
+    console.log('startCollection', startCollection);
+    let nextCollection;
+    for (let index = 0; index < startCollection.length; index++) {
+        if (startCollection[index].children.length > 0) {
+            count += 1;
+            console.log('count', count);
+            nextCollection = startCollection[index].children;
+            countDOMDepth(nextCollection);
         } else {
-            console.warn('no results');
+            if (count > maxCount) {
+                maxCount = count;
+            } else {
+                count = 0;
+            }
+            deepestNode = startCollection[index];
+            //nextCollection = startCollection[index];
         }
-    });
-    return count;
+    }
+    return {maxCount, count, deepestNode};
 }
 
-const totalDepth = getDOMDepth(document.body, startNodeClassName);
+function getDOMDepth(className) {
+    const startCollection = document.getElementsByClassName(className);
+    return countDOMDepth(startCollection);
+}
+
+const totalDepth = getDOMDepth(startNodeClassName);
 console.log('totalDepth', totalDepth);
